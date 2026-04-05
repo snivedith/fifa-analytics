@@ -2,18 +2,23 @@
 data_loader.py
 --------------
 Loads FIFA player data automatically from a public GitHub URL.
-No manual CSV download needed — works locally and on Streamlit Cloud.
-
 Dataset: https://raw.githubusercontent.com/rashida048/Datasets/master/fifa.csv
-Columns include: Name, Age, Nationality, Club, Overall, Potential,
-                 Value, Wage, Position, Preferred Foot,
-                 PAC, SHO, PAS, DRI, DEF, PHY
 """
 
 import pandas as pd
 import streamlit as st
 
 DATA_URL = "https://raw.githubusercontent.com/rashida048/Datasets/master/fifa.csv"
+
+POS_MAP = {
+    "GK":  "Goalkeeper",
+    "CB":  "Defender",  "LB":  "Defender",  "RB":  "Defender",
+    "LWB": "Defender",  "RWB": "Defender",
+    "CDM": "Midfielder","CM":  "Midfielder","CAM": "Midfielder",
+    "LM":  "Midfielder","RM":  "Midfielder",
+    "LW":  "Forward",   "RW":  "Forward",   "ST":  "Forward",
+    "CF":  "Forward",   "RF":  "Forward",   "LF":  "Forward",
+}
 
 
 def _parse_money(val) -> float:
@@ -22,79 +27,62 @@ def _parse_money(val) -> float:
         return 0.0
     val = str(val).replace("€", "").replace(",", "").strip()
     if "M" in val:
-        return float(val.replace("M", ""))
+        try: return float(val.replace("M", ""))
+        except: return 0.0
     if "K" in val:
-        return float(val.replace("K", "")) / 1000
+        try: return float(val.replace("K", "")) / 1000
+        except: return 0.0
     try:
         return float(val) / 1_000_000
-    except ValueError:
+    except:
         return 0.0
 
 
 @st.cache_data(show_spinner="Downloading FIFA dataset…")
 def load_data() -> pd.DataFrame:
-    """Download dataset from public URL and return raw DataFrame."""
     try:
         df = pd.read_csv(DATA_URL)
         return df
     except Exception as e:
-        raise ConnectionError(
-            f"Could not download the dataset. Check your internet connection.\n{e}"
-        )
+        raise ConnectionError(f"Could not download the dataset.\n{e}")
 
 
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
-    """Clean and standardise the raw DataFrame."""
     df = df.copy()
-
-    # Normalise column names — strip whitespace
     df.columns = df.columns.str.strip()
 
-    # Build rename map dynamically based on what columns exist
+    # Print columns to help debug (visible in Streamlit logs)
     rename_candidates = {
-        "Name":           "short_name",
-        "name":           "short_name",
-        "Nationality":    "nationality_name",
-        "nationality":    "nationality_name",
-        "Club":           "club_name",
-        "club":           "club_name",
-        "Age":            "age",
-        "age":            "age",
-        "Overall":        "overall",
-        "OVA":            "overall",
-        "Potential":      "potential",
-        "POT":            "potential",
-        "Value":          "value_eur_raw",
-        "Wage":           "wage_eur_raw",
-        "Position":       "player_positions",
-        "Positions":      "player_positions",
+        "Name": "short_name", "name": "short_name",
+        "Nationality": "nationality_name", "nationality": "nationality_name",
+        "Club": "club_name", "club": "club_name",
+        "Age": "age", "age": "age",
+        "Overall": "overall", "OVA": "overall",
+        "Potential": "potential", "POT": "potential",
+        "Value": "value_eur_raw", "Wage": "wage_eur_raw",
+        "Position": "player_positions", "Positions": "player_positions",
         "Preferred Foot": "preferred_foot",
-        "PAC":            "pace",
-        "SHO":            "shooting",
-        "PAS":            "passing",
-        "DRI":            "dribbling",
-        "DEF":            "defending",
-        "PHY":            "physic",
+        "PAC": "pace", "SHO": "shooting", "PAS": "passing",
+        "DRI": "dribbling", "DEF": "defending", "PHY": "physic",
     }
     rename_map = {k: v for k, v in rename_candidates.items() if k in df.columns}
     df.rename(columns=rename_map, inplace=True)
 
-    # Ensure required columns exist with fallback defaults
-    for col in ["short_name", "nationality_name", "club_name", "overall", "age"]:
-        if col not in df.columns:
-            raise ValueError(f"Required column '{col}' not found in dataset.")
-
-    # Drop rows missing key fields
     df.dropna(subset=["overall", "club_name", "nationality_name"], inplace=True)
 
-    # Market value & wage
+    # Parse money — use raw numeric if string parsing gives 0
     if "value_eur_raw" in df.columns:
         df["value_m"] = df["value_eur_raw"].apply(_parse_money)
+        # If all zeros, try treating column as numeric directly
+        if df["value_m"].sum() == 0:
+            df["value_m"] = pd.to_numeric(df["value_eur_raw"], errors="coerce").fillna(0) / 1_000_000
     else:
         df["value_m"] = 0.0
 
     if "wage_eur_raw" in df.columns:
         df["wage_k"] = df["wage_eur_raw"].apply(_parse_money)
+        if df["wage_k"].sum() == 0:
+            df["wage_k"] = pd.to_numeric(df["wage_eur_raw"], errors="coerce").fillna(0) / 1_000
     else:
         df["wage_k"] = 0.0
 
@@ -104,28 +92,14 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     else:
         df["primary_position"] = "Unknown"
 
-    pos_map = {
-        "GK":  "Goalkeeper",
-        "CB":  "Defender",  "LB":  "Defender",  "RB":  "Defender",
-        "LWB": "Defender",  "RWB": "Defender",
-        "CDM": "Midfielder","CM":  "Midfielder","CAM": "Midfielder",
-        "LM":  "Midfielder","RM":  "Midfielder",
-        "LW":  "Forward",   "RW":  "Forward",   "ST":  "Forward",
-        "CF":  "Forward",   "RF":  "Forward",   "LF":  "Forward",
-    }
-    df["position_group"] = df["primary_position"].map(pos_map).fillna("Other")
+    df["position_group"] = df["primary_position"].map(POS_MAP).fillna("Other")
 
     # Numeric coercion
     for col in ["pace","shooting","passing","dribbling","defending","physic","overall","potential","age"]:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
-    # Growth potential
-    if "potential" in df.columns:
-        df["growth"] = df["potential"] - df["overall"]
-    else:
-        df["growth"] = 0
-
+    df["growth"] = df.get("potential", 0) - df["overall"]
     df.dropna(subset=["overall", "age"], inplace=True)
     df.reset_index(drop=True, inplace=True)
     return df
