@@ -115,23 +115,7 @@ PLOTLY_LAYOUT = dict(
     plot_bgcolor="#F8FAFC",
     font=dict(family="Plus Jakarta Sans", color="#0F172A", size=13),
     margin=dict(l=10, r=20, t=40, b=20),
-    xaxis=dict(
-        gridcolor="#E2E8F0",
-        zerolinecolor="#CBD5E1",
-        tickfont=dict(color="#0F172A", size=13),
-        titlefont=dict(color="#0F172A", size=13),
-        linecolor="#CBD5E1",
-    ),
-    yaxis=dict(
-        gridcolor="#E2E8F0",
-        zerolinecolor="#CBD5E1",
-        tickfont=dict(color="#0F172A", size=13),
-        titlefont=dict(color="#0F172A", size=13),
-        linecolor="#CBD5E1",
-    ),
     height=420,
-    title_font=dict(color="#0F172A", size=14),
-    legend=dict(font=dict(color="#0F172A", size=12)),
 )
 
 def apply_theme(fig):
