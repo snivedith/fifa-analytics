@@ -113,10 +113,10 @@ st.markdown(f"""
 PLOTLY_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Plus Jakarta Sans", color="#334155", size=12),
+    font=dict(family="Plus Jakarta Sans", color="#0F172A", size=13),
     margin=dict(l=10, r=20, t=40, b=20),
-    xaxis=dict(gridcolor="#F1F5F9", zerolinecolor="#E2E8F0"),
-    yaxis=dict(gridcolor="#F1F5F9", zerolinecolor="#E2E8F0"),
+    xaxis=dict(gridcolor="#F1F5F9", zerolinecolor="#E2E8F0", tickfont=dict(color="#0F172A", size=12)),
+    yaxis=dict(gridcolor="#F1F5F9", zerolinecolor="#E2E8F0", tickfont=dict(color="#0F172A", size=12)),
     height=420,
 )
 
