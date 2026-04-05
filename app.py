@@ -258,9 +258,6 @@ with col3:
         labels={"age": "Age", "avg_overall": "Avg Overall Rating"},
     )
     fig3.update_traces(line_color=BLUE, marker_color=BLUE, line_width=2.5, marker_size=5)
-    fig3.update_layout(
-        fill=None,
-    )
     # Add subtle fill under line
     fig3.add_traces(go.Scatter(
         x=age_df["age"], y=age_df["avg_overall"],
