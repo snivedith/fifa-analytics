@@ -39,34 +39,72 @@ BLUE_SCALE = ["#DBEAFE", "#93C5FD", "#3B82F6", "#1D4ED8", "#1E3A8A"]
 st.markdown(f"""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
-  html, body, [class*="css"] {{ font-family: 'Plus Jakarta Sans', sans-serif; background-color: {WHITE}; color: {DARK}; }}
+
+  html, body, [class*="css"] {{
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: {WHITE};
+      color: {DARK} !important;
+  }}
   .stApp {{ background-color: {WHITE}; }}
+
+  /* Fix all general text to be dark and visible */
+  p, span, div, label {{ color: {DARK} !important; }}
+
+  /* Sidebar */
   section[data-testid="stSidebar"] {{ background-color: {DARK}; }}
-  section[data-testid="stSidebar"] * {{ color: #CBD5E1 !important; }}
+  section[data-testid="stSidebar"] p,
+  section[data-testid="stSidebar"] span,
+  section[data-testid="stSidebar"] div,
+  section[data-testid="stSidebar"] label {{ color: #CBD5E1 !important; }}
   section[data-testid="stSidebar"] h2 {{ color: white !important; }}
+
+  /* Slider labels */
+  .stSlider label, .stSlider p {{ color: {DARK} !important; font-weight: 600; }}
+  .stSlider [data-testid="stTickBarMin"],
+  .stSlider [data-testid="stTickBarMax"] {{ color: {MUTED} !important; }}
+
+  /* Selectbox and multiselect labels */
+  .stSelectbox label, .stMultiSelect label {{ color: {DARK} !important; font-weight: 600; }}
+
+  /* Text input */
+  .stTextInput label {{ color: {DARK} !important; font-weight: 600; }}
+  .stTextInput input {{ color: {DARK} !important; background: white; border: 1px solid #E2E8F0; }}
+
+  /* Metric cards */
   div[data-testid="metric-container"] {{
       background: white; border: 1px solid #E2E8F0;
       border-top: 3px solid {BLUE}; border-radius: 8px;
       padding: 1.2rem 1.4rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }}
   div[data-testid="metric-container"] label {{
-      color: {MUTED}; font-size: 0.72rem; font-weight: 600;
+      color: {MUTED} !important; font-size: 0.72rem; font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.08em;
   }}
   div[data-testid="metric-container"] [data-testid="metric-value"] {{
-      color: {DARK}; font-family: 'IBM Plex Mono', monospace;
+      color: {DARK} !important; font-family: 'IBM Plex Mono', monospace;
       font-size: 1.75rem; font-weight: 600;
   }}
+
+  /* Section titles */
   .section-title {{
-      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.12em; color: {BLUE}; margin-bottom: 0.5rem;
+      font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: {BLUE} !important; margin-bottom: 0.6rem;
   }}
+
+  /* Page header banner */
   .page-header {{
       background: linear-gradient(135deg, {DARK} 0%, {SLATE} 100%);
       border-radius: 12px; padding: 2rem 2.5rem; margin-bottom: 1.5rem;
   }}
   .page-header h1 {{ color: white !important; margin: 0; font-size: 2rem !important; }}
-  .page-header p {{ color: #94A3B8; margin: 0.3rem 0 0 0; font-size: 0.95rem; }}
+  .page-header p {{ color: #94A3B8 !important; margin: 0.3rem 0 0 0; font-size: 0.95rem; }}
+
+  /* Dataframe */
+  .stDataFrame {{ border-radius: 8px; }}
+
+  /* Caption */
+  .stCaption {{ color: {MUTED} !important; }}
+
   footer, #MainMenu {{ visibility: hidden; }}
   .block-container {{ padding-top: 1.5rem; padding-bottom: 2rem; }}
 </style>
