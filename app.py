@@ -58,6 +58,17 @@ st.markdown(f"""
   section[data-testid="stSidebar"] label {{ color: #CBD5E1 !important; }}
   section[data-testid="stSidebar"] h2 {{ color: white !important; }}
 
+  /* Sidebar multiselect dropdown options */
+  section[data-testid="stSidebar"] .stMultiSelect span {{ color: #CBD5E1 !important; }}
+  section[data-testid="stSidebar"] [data-baseweb="select"] span {{ color: #CBD5E1 !important; }}
+  section[data-testid="stSidebar"] [data-baseweb="menu"] li {{ color: #0F172A !important; }}
+  section[data-testid="stSidebar"] [data-baseweb="popover"] li {{ color: #0F172A !important; }}
+  section[data-testid="stSidebar"] [role="option"] {{ color: #0F172A !important; background: white !important; }}
+  section[data-testid="stSidebar"] [role="option"]:hover {{ background: #EFF6FF !important; }}
+
+  /* Sidebar selectbox dropdown */
+  section[data-testid="stSidebar"] [data-baseweb="select"] div {{ color: #CBD5E1 !important; }}
+
   /* Slider labels */
   .stSlider label, .stSlider p {{ color: {DARK} !important; font-weight: 600; }}
   .stSlider [data-testid="stTickBarMin"],
@@ -96,7 +107,7 @@ st.markdown(f"""
       background: linear-gradient(135deg, {DARK} 0%, {SLATE} 100%);
       border-radius: 12px; padding: 2rem 2.5rem; margin-bottom: 1.5rem;
   }}
-  .page-header h1 {{ color: white !important; margin: 0; font-size: 2rem !important; }}
+  .page-header h1 {{ color: #FFFFFF !important; margin: 0; font-size: 2rem !important; text-shadow: none !important; opacity: 1 !important; }}
   .page-header p {{ color: #94A3B8 !important; margin: 0.3rem 0 0 0; font-size: 0.95rem; }}
 
   /* Dataframe */
@@ -170,8 +181,8 @@ if preferred_foot != "Both":
 # ─── Header ───────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <div class="page-header">
-    <h1>⚽ FIFA Player Analytics</h1>
-    <p>Exploring <strong style="color:white">{len(df):,} players</strong> · Use the sidebar to filter</p>
+    <h1 style="color:#FFFFFF !important; font-size:2rem; margin:0;">⚽ FIFA Player Analytics</h1>
+    <p style="color:#94A3B8; margin:0.3rem 0 0 0;">Exploring <strong style="color:#FFFFFF">{len(df):,} players</strong> · Use the sidebar to filter</p>
 </div>
 """, unsafe_allow_html=True)
 
