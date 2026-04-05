@@ -73,14 +73,14 @@ def apply_theme(fig):
 
 
 # ─── Load data ────────────────────────────────────────────────────────────────
-@st.cache_data(show_spinner="Loading FIFA 22 dataset…")
+@st.cache_data(show_spinner="Loading FIFA dataset…")
 def get_data():
-    df = load_data("data/players_22.csv")
+    df = load_data()          # downloads automatically — no CSV needed
     return preprocess_data(df)
 
 try:
     df_full = get_data()
-except FileNotFoundError as e:
+except ConnectionError as e:
     st.error(str(e))
     st.stop()
 
