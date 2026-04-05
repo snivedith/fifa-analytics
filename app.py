@@ -120,17 +120,8 @@ PLOTLY_LAYOUT = dict(
 
 def apply_theme(fig):
     fig.update_layout(**PLOTLY_LAYOUT)
-    # Force all axis text to dark on every chart
-    fig.update_xaxes(
-        tickfont=dict(color="#0F172A", size=13),
-        titlefont=dict(color="#0F172A", size=13),
-        title_standoff=10,
-    )
-    fig.update_yaxes(
-        tickfont=dict(color="#0F172A", size=13),
-        titlefont=dict(color="#0F172A", size=13),
-        title_standoff=10,
-    )
+    fig.update_xaxes(tickfont=dict(color="#0F172A", size=13))
+    fig.update_yaxes(tickfont=dict(color="#0F172A", size=13))
     return fig
 
 # ─── Load data ────────────────────────────────────────────────────────────────
